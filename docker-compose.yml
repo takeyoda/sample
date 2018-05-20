@@ -1,9 +1,18 @@
-version: "2"
+version: '3'
 
 services:
   app:
-    build: "."
+    build: '.'
     ports:
-      - "4567:4567"
+      - '4567:4567'
     environment:
-      - HOGE=hogeValue
+      - HOGE: hogeValue
+    # https://docs.docker.com/config/containers/logging/awslogs/
+    logging:
+      driver: 'awslogs'
+      options:
+        awslogs-region: 'ap-northeast-1'
+        awslogs-group: 'docker'
+        tag: '{{ with split .ImageName ":" }}{{join . "_"}}{{end}}-{{.ID}}'
+        awslogs-create-group: 'true'
+        awslogs-datetime-format: '\[%Y-%m-%d %H:%M:%S\]'
